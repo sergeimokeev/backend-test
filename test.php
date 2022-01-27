@@ -11,16 +11,16 @@
 /**
  * Класс для работы с API
  *
- * @author		User Name
- * @version		v.1.0 (dd/mm/yyyy)
+ * @author        User Name
+ * @version        v.1.0 (dd/mm/yyyy)
  */
 class Api
 {
 
     public function __construct()
-	{
-	
-	}
+    {
+
+    }
 
 
     /**
@@ -33,40 +33,39 @@ class Api
      * @author        User Name
      * @version        v.1.0 (dd/mm/yyyy)
      */
-	public function get_api_path(array $array, string $template) : string
-	{
+    public function get_api_path(array $array, string $template): string
+    {
         $parts = explode('/', $template);
         $userParamKey = str_replace('%', '', array_pop($parts));
         if (!array_key_exists($userParamKey, $array))
             throw new Exception('Параметр не найден');
 
         return '/api/items/' . $array['id'] . '/' . rawurlencode($array[$userParamKey]);
-	}
+    }
 
 }
 
 $user =
-[
-	'id'		=> 20,
-	'name'		=> 'John Dow',
-	'role'		=> 'QA',
-	'salary'	=> 100
-];
+    [
+        'id' => 20,
+        'name' => 'John Dow',
+        'role' => 'QA',
+        'salary' => 100
+    ];
 
 $api_path_templates =
-[
-	"/api/items/%id%/%name%",
-	"/api/items/%id%/%role%",
-	"/api/items/%id%/%salary%"
-];
+    [
+        "/api/items/%id%/%name%",
+        "/api/items/%id%/%role%",
+        "/api/items/%id%/%salary%"
+    ];
 
 $api = new Api();
 
-$api_paths = array_map(function ($api_path_template) use ($api, $user)
-{
-	return $api->get_api_path($user, $api_path_template);
+$api_paths = array_map(function ($api_path_template) use ($api, $user) {
+    return $api->get_api_path($user, $api_path_template);
 }, $api_path_templates);
 
 echo json_encode($api_paths, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE);
 
-$expected_result = ['/api/items/20/John%20Dow','/api/items/20/QA','/api/items/20/100'];
+$expected_result = ['/api/items/20/John%20Dow', '/api/items/20/QA', '/api/items/20/100'];
